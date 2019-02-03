@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.TravelPlanMapper">
+
+    <select id="getOngoingTravelPlan" parameterType="Integer" resultType="TravelPlan">
+        SELECT *
+        FROM travelplan
+        WHERE travelPlanNo=
+        (SELECT travelPlanNo
+        FROM travelplan t,namelist n
+        WHERE t.status="ongoing" and t.travelPlanNo=n.travelPlanNo and n.userId=#{userId})
+    </select>
+
+    <select id="getCompletedTravelPlan" parameterType="Integer" resultType="TravelPlan">
+        SELECT *
+        FROM travelplan
+        WHERE travelPlanNo in
+        (SELECT travelPlanNo
+        FROM travelplan t,namelist n
+        WHERE t.status="completed" and t.travelPlanNo=n.travelPlanNo and n.userId=#{userId})
+    </select>
+
+    <insert id="createNewTravelPlan">
+        INSERT INTO travelplan(travelPlanNo,travelPlanName,travelLineIntro,status,founderId,moodspictures)
+        VALUES (#{travelPlanNo}, #{travelPlanName},#{travelLineIntro},#{status},#{founderId},#{moodspictures})
+    </insert>
+
+    <select id="shareTravelPlan" parameterType="Integer" resultType="TravelPlan">
+        SELECT *
+        FROM travelplan
+        WHERE travelPlanNo=#{travelPlanNo}
+    </select>
+
+    <update id="shareMoodsPictures">
+        UPDATE travelplan
+        SET moodspictures=#{moodspictures}
+        WHERE travelPlanNo=#{travelPlanNo}
+    </update>
+
+</mapper>

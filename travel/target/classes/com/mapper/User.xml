@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.UserMapper">
+
+    <select id="getUserByOpenId" resultType="User">
+        SELECT *
+        FROM user
+        WHERE openId = #{openId}
+    </select>
+
+    <insert id="addUser" parameterType="com.pojo.User" useGeneratedKeys="true" keyProperty="user.userId">
+        INSERT INTO user ( openId)
+        VALUES ( #{user.openId})
+    </insert>
+
+    <update id="setUserInfo">
+        UPDATE user
+        SET userName=#{userName},headShoturl=#{headShoturl}
+        WHERE userId=#{userId}
+    </update>
+
+    <select id="getUserByUserId" parameterType="Integer" resultType="User">
+        SELECT *
+        FROM user
+        WHERE userId = #{userId}
+    </select>
+
+    <select id="getFriendList" parameterType="Integer" resultType="Integer">
+        SELECT u2
+        FROM friends
+        WHERE u1 = #{userId}
+    </select>
+
+    <update id="setLocation">
+        UPDATE user
+        SET latitude=#{latitude},longitude=#{longitude}
+        WHERE userId=#{userId}
+    </update>
+
+    <select id="viewFriendInfo" parameterType="Integer" resultType="User">
+        SELECT *
+        FROM user
+        WHERE userId=
+        (SELECT f.u2
+        FROM user u,friends f
+        WHERE f.u1 = #{userId1} and f.u2=#{userId2} and u.userId=f.u1)
+    </select>
+
+</mapper>
